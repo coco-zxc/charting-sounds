@@ -1,4 +1,7 @@
 # Charting Sounds
+
+<img width="1131" alt="Screenshot 2023-06-19 at 16 40 26" src="https://github.com/coco-zxc/charting-sounds/assets/109617201/1e396ca8-cb5e-4e77-a727-d3d6406e38d8">
+
 Inspired by Glenn McDonald's Every Noise at Once. This project plots musical genres as a mathematical Network, showcasing the relationships between musical genres.
 
 This project uses the information found at [Every Noise at Once](https://everynoise.com) to display musical genres found on Spotify as a Mathematical Network.
