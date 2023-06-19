@@ -4,9 +4,9 @@ Inspired by Glenn McDonald's Every Noise at Once. This project plots musical gen
 This project uses the information found at [Every Noise at Once](https://everynoise.com) to display musical genres found on Spotify as a Mathematical Network.
 
 This is done through 3 different steps: 
-1. Gather data found at Every Noise at Once through Web Scraping.
-2. Calculate the "distance" between musical genres and generate a relationship matrix (heatmap)
-3. Use PyVis to generate an interactive network that users can explore to find new music.
+1. Gather data found at Every Noise at Once through Web Scraping. [see here](https://github.com/coco-zxc/charting-sounds/blob/main/every_noise_at_once.py)
+2. Calculate the "distance" between musical genres and generate a relationship matrix (heatmap) [see here](https://github.com/coco-zxc/charting-sounds/blob/main/genre_distance_calculator.py)
+3. Use PyVis to generate an interactive network that users can explore to find new music. [see here](https://github.com/coco-zxc/charting-sounds/blob/main/map.py)
 
 Notes: While this is still uncertain, the final objective of this project is to use Spotify's developer API to give 30s of sample music for each genre. This has not yet been developed as of the publication of this README file.
 
