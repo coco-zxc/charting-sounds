@@ -1,0 +1,700 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+                <link href="lib/tom-select/tom-select.css" rel="stylesheet">
+                <script src="lib/tom-select/tom-select.complete.min.js"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 600px;
+                 background-color: #222222;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+             #loadingBar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width: 100%;
+                 height: 600px;
+                 background-color:rgba(200,200,200,0.8);
+                 -webkit-transition: all 0.5s ease;
+                 -moz-transition: all 0.5s ease;
+                 -ms-transition: all 0.5s ease;
+                 -o-transition: all 0.5s ease;
+                 transition: all 0.5s ease;
+                 opacity:1;
+             }
+
+             #bar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width:20px;
+                 height:20px;
+                 margin:auto auto auto auto;
+                 border-radius:11px;
+                 border:2px solid rgba(30,30,30,0.05);
+                 background: rgb(0, 173, 246); /* Old browsers */
+                 box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+             }
+
+             #border {
+                 position:absolute;
+                 top:10px;
+                 left:10px;
+                 width:500px;
+                 height:23px;
+                 margin:auto auto auto auto;
+                 box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+                 border-radius:10px;
+             }
+
+             #text {
+                 position:absolute;
+                 top:8px;
+                 left:530px;
+                 width:30px;
+                 height:50px;
+                 margin:auto auto auto auto;
+                 font-size:22px;
+                 color: #000000;
+             }
+
+             div.outerBorder {
+                 position:relative;
+                 top:400px;
+                 width:600px;
+                 height:44px;
+                 margin:auto auto auto auto;
+                 border:8px solid rgba(0,0,0,0.1);
+                 background: rgb(252,252,252); /* Old browsers */
+                 background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+                 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+                 background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+                 background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+                 background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+                 background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+                 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+                 border-radius:72px;
+                 box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+             }
+             
+
+             
+             #config {
+                 float: left;
+                 width: 400px;
+                 height: 600px;
+             }
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+                <div id="select-menu" class="card-header">
+                    <div class="row no-gutters">
+                        <div class="col-10 pb-2">
+                            <select
+                            class="form-select"
+                            aria-label="Default select example"
+                            onchange="selectNode([value]);"
+                            id="select-node"
+                            placeholder="Select node..."
+                            >
+                                <option selected>Select a Node by ID</option>
+                                
+                                    <option value="pop">pop</option>
+                                
+                                    <option value="rap">rap</option>
+                                
+                                    <option value="rock">rock</option>
+                                
+                                    <option value="urbano latino">urbano latino</option>
+                                
+                                    <option value="hip hop">hip hop</option>
+                                
+                                    <option value="trap latino">trap latino</option>
+                                
+                                    <option value="dance pop">dance pop</option>
+                                
+                                    <option value="reggaeton">reggaeton</option>
+                                
+                                    <option value="modern rock">modern rock</option>
+                                
+                                    <option value="latin pop">latin pop</option>
+                                
+                                    <option value="classic rock">classic rock</option>
+                                
+                                    <option value="musica mexicana">musica mexicana</option>
+                                
+                                    <option value="pov: indie">pov: indie</option>
+                                
+                                    <option value="permanent wave">permanent wave</option>
+                                
+                                    <option value="alternative metal">alternative metal</option>
+                                
+                                    <option value="corrido">corrido</option>
+                                
+                                    <option value="trap">trap</option>
+                                
+                                    <option value="filmi">filmi</option>
+                                
+                                    <option value="nueva musica mexicana">nueva musica mexicana</option>
+                                
+                                    <option value="k-pop">k-pop</option>
+                                
+                                    <option value="album rock">album rock</option>
+                                
+                                    <option value="edm">edm</option>
+                                
+                                    <option value="contemporary country">contemporary country</option>
+                                
+                                    <option value="soft rock">soft rock</option>
+                                
+                                    <option value="pop rap">pop rap</option>
+                                
+                                    <option value="norteno">norteno</option>
+                                
+                                    <option value="pop dance">pop dance</option>
+                                
+                                    <option value="hard rock">hard rock</option>
+                                
+                                    <option value="sierreno">sierreno</option>
+                                
+                                    <option value="canadian pop">canadian pop</option>
+                                
+                                    <option value="sad sierreno">sad sierreno</option>
+                                
+                                    <option value="mellow gold">mellow gold</option>
+                                
+                                    <option value="uk pop">uk pop</option>
+                                
+                                    <option value="nu metal">nu metal</option>
+                                
+                                    <option value="desi pop">desi pop</option>
+                                
+                                    <option value="country">country</option>
+                                
+                                    <option value="melodic rap">melodic rap</option>
+                                
+                                    <option value="post-grunge">post-grunge</option>
+                                
+                                    <option value="modern bollywood">modern bollywood</option>
+                                
+                                    <option value="banda">banda</option>
+                                
+                                    <option value="alternative rock">alternative rock</option>
+                                
+                                    <option value="sertanejo universitario">sertanejo universitario</option>
+                                
+                                    <option value="art pop">art pop</option>
+                                
+                                    <option value="singer-songwriter">singer-songwriter</option>
+                                
+                                    <option value="country road">country road</option>
+                                
+                                    <option value="atl hip hop">atl hip hop</option>
+                                
+                                    <option value="colombian pop">colombian pop</option>
+                                
+                                    <option value="corridos tumbados">corridos tumbados</option>
+                                
+                                    <option value="french hip hop">french hip hop</option>
+                                
+                                    <option value="urban contemporary">urban contemporary</option>
+                                
+                                    <option value="alt z">alt z</option>
+                                
+                                    <option value="reggaeton colombiano">reggaeton colombiano</option>
+                                
+                                    <option value="arrocha">arrocha</option>
+                                
+                                    <option value="pop urbaine">pop urbaine</option>
+                                
+                                    <option value="southern hip hop">southern hip hop</option>
+                                
+                                    <option value="mexican pop">mexican pop</option>
+                                
+                                    <option value="indietronica">indietronica</option>
+                                
+                                    <option value="sertanejo">sertanejo</option>
+                                
+                                    <option value="latin alternative">latin alternative</option>
+                                
+                                    <option value="gangster rap">gangster rap</option>
+                                
+                                    <option value="k-pop girl group">k-pop girl group</option>
+                                
+                                    <option value="pop punk">pop punk</option>
+                                
+                                    <option value="j-pop">j-pop</option>
+                                
+                                    <option value="rock en espanol">rock en espanol</option>
+                                
+                                    <option value="new wave pop">new wave pop</option>
+                                
+                                    <option value="ranchera">ranchera</option>
+                                
+                                    <option value="german hip hop">german hip hop</option>
+                                
+                                    <option value="chicago rap">chicago rap</option>
+                                
+                                    <option value="k-pop boy group">k-pop boy group</option>
+                                
+                                    <option value="soul">soul</option>
+                                
+                                    <option value="heartland rock">heartland rock</option>
+                                
+                                    <option value="electro house">electro house</option>
+                                
+                                    <option value="neo mellow">neo mellow</option>
+                                
+                                    <option value="italian pop">italian pop</option>
+                                
+                                    <option value="latin hip hop">latin hip hop</option>
+                                
+                                    <option value="latin arena pop">latin arena pop</option>
+                                
+                                    <option value="agronejo">agronejo</option>
+                                
+                                    <option value="latin rock">latin rock</option>
+                                
+                                    <option value="electropop">electropop</option>
+                                
+                                    <option value="pop rock">pop rock</option>
+                                
+                                    <option value="canadian hip hop">canadian hip hop</option>
+                                
+                                    <option value="uk dance">uk dance</option>
+                                
+                                    <option value="conscious hip hop">conscious hip hop</option>
+                                
+                                    <option value="rap metal">rap metal</option>
+                                
+                                    <option value="new wave">new wave</option>
+                                
+                                    <option value="house">house</option>
+                                
+                                    <option value="indonesian pop">indonesian pop</option>
+                                
+                                    <option value="modern alternative rock">modern alternative rock</option>
+                                
+                                    <option value="toronto rap">toronto rap</option>
+                                
+                                    <option value="folk rock">folk rock</option>
+                                
+                                    <option value="indie rock">indie rock</option>
+                                
+                                    <option value="trap argentino">trap argentino</option>
+                                
+                                    <option value="new romantic">new romantic</option>
+                                
+                                    <option value="metal">metal</option>
+                                
+                                    <option value="bedroom pop">bedroom pop</option>
+                                
+                                    <option value="east coast hip hop">east coast hip hop</option>
+                                
+                                    <option value="indie pop">indie pop</option>
+                                
+                                    <option value="italian hip hop">italian hip hop</option>
+                                
+                                    <option value="afrobeats">afrobeats</option>
+                                
+                                    <option value="post-teen pop">post-teen pop</option>
+                                
+                                    <option value="west coast rap">west coast rap</option>
+                                
+                                    <option value="turkish pop">turkish pop</option>
+                                
+                                    <option value="slap house">slap house</option>
+                                
+                                    <option value="miami hip hop">miami hip hop</option>
+                                
+                                    <option value="boy band">boy band</option>
+                                
+                                    <option value="spanish pop">spanish pop</option>
+                                
+                                    <option value="cloud rap">cloud rap</option>
+                                
+                                    <option value="trap brasileiro">trap brasileiro</option>
+                                
+                                    <option value="glam metal">glam metal</option>
+                                
+                                    <option value="punjabi pop">punjabi pop</option>
+                                
+                                    <option value="modern country pop">modern country pop</option>
+                                
+                                    <option value="neo soul">neo soul</option>
+                                
+                                    <option value="hoerspiel">hoerspiel</option>
+                                
+                                    <option value="stomp and holler">stomp and holler</option>
+                                
+                                    <option value="progressive house">progressive house</option>
+                                
+                                    <option value="glam rock">glam rock</option>
+                                
+                                    <option value="progressive electro house">progressive electro house</option>
+                                
+                                    <option value="puerto rican pop">puerto rican pop</option>
+                                
+                                    <option value="country rock">country rock</option>
+                                
+                                    <option value="viral pop">viral pop</option>
+                                
+                                    <option value="rage rap">rage rap</option>
+                                
+                                    <option value="underground hip hop">underground hip hop</option>
+                                
+                                    <option value="piano rock">piano rock</option>
+                                
+                                    <option value="talent show">talent show</option>
+                                
+                                    <option value="synthpop">synthpop</option>
+                                
+                                    <option value="nigerian pop">nigerian pop</option>
+                                
+                                    <option value="dark trap">dark trap</option>
+                                
+                                    <option value="punk">punk</option>
+                                
+                                    <option value="swedish pop">swedish pop</option>
+                                
+                                    <option value="rap francais">rap francais</option>
+                                
+                                    <option value="desi hip hop">desi hip hop</option>
+                                
+                                    <option value="argentine rock">argentine rock</option>
+                                
+                                    <option value="tropical">tropical</option>
+                                
+                                    <option value="psychedelic rock">psychedelic rock</option>
+                                
+                                    <option value="ccm">ccm</option>
+                                
+                                    <option value="big room">big room</option>
+                                
+                                    <option value="grupera">grupera</option>
+                                
+                                    <option value="garage rock">garage rock</option>
+                                
+                                    <option value="tropical house">tropical house</option>
+                                
+                                    <option value="opm">opm</option>
+                                
+                                    <option value="italian adult pop">italian adult pop</option>
+                                
+                                    <option value="detroit hip hop">detroit hip hop</option>
+                                
+                                    <option value="hip pop">hip pop</option>
+                                
+                                    <option value="art rock">art rock</option>
+                                
+                                    <option value="german pop">german pop</option>
+                                
+                                    <option value="modern country rock">modern country rock</option>
+                                
+                                    <option value="sped up">sped up</option>
+                                
+                                    <option value="metropopolis">metropopolis</option>
+                                
+                                    <option value="argentine hip hop">argentine hip hop</option>
+                                
+                                    <option value="europop">europop</option>
+                                
+                                    <option value="mpb">mpb</option>
+                                
+                                    <option value="sleep">sleep</option>
+                                
+                                    <option value="folk">folk</option>
+                                
+                                    <option value="adult standards">adult standards</option>
+                                
+                                    <option value="yacht rock">yacht rock</option>
+                                
+                                    <option value="urbano espanol">urbano espanol</option>
+                                
+                                    <option value="dance rock">dance rock</option>
+                                
+                                    <option value="anime">anime</option>
+                                
+                                    <option value="mexican hip hop">mexican hip hop</option>
+                                
+                                    <option value="brostep">brostep</option>
+                                
+                                    <option value="indie folk">indie folk</option>
+                                
+                                    <option value="chamber pop">chamber pop</option>
+                                
+                                    <option value="british soul">british soul</option>
+                                
+                                    <option value="trap triste">trap triste</option>
+                                
+                                    <option value="disco">disco</option>
+                                
+                                    <option value="polish hip hop">polish hip hop</option>
+                                
+                                    <option value="j-rock">j-rock</option>
+                                
+                                    <option value="metalcore">metalcore</option>
+                                
+                                    <option value="emo rap">emo rap</option>
+                                
+                                    <option value="gen z singer-songwriter">gen z singer-songwriter</option>
+                                
+                                    <option value="folk-pop">folk-pop</option>
+                                
+                                    <option value="indie soul">indie soul</option>
+                                
+                                    <option value="mexican rock">mexican rock</option>
+                                
+                                    <option value="classical">classical</option>
+                                
+                                    <option value="uk hip hop">uk hip hop</option>
+                                
+                                    <option value="pluggnb">pluggnb</option>
+                                
+                                    <option value="blues rock">blues rock</option>
+                                
+                                    <option value="grunge">grunge</option>
+                                
+                                    <option value="christian music">christian music</option>
+                                
+                                    <option value="funk metal">funk metal</option>
+                                
+                                    <option value="reggaeton flow">reggaeton flow</option>
+                                
+                                    <option value="vocal jazz">vocal jazz</option>
+                                
+                                    <option value="drift phonk">drift phonk</option>
+                                
+                                    <option value="turkish rock">turkish rock</option>
+                                
+                                    <option value="alternative hip hop">alternative hip hop</option>
+                                
+                                    <option value="trap boricua">trap boricua</option>
+                                
+                                    <option value="funk carioca">funk carioca</option>
+                                
+                                    <option value="memphis hip hop">memphis hip hop</option>
+                                
+                                    <option value="mariachi">mariachi</option>
+                                
+                                    <option value="melodic metalcore">melodic metalcore</option>
+                                
+                                    <option value="pop nacional">pop nacional</option>
+                                
+                                    <option value="trap italiana">trap italiana</option>
+                                
+                                    <option value="salsa">salsa</option>
+                                
+                                    <option value="dirty south rap">dirty south rap</option>
+                                
+                                    <option value="electronica">electronica</option>
+                                
+                                    <option value="pop soul">pop soul</option>
+                                
+                                    <option value="beatlesque">beatlesque</option>
+                                
+                                    <option value="british invasion">british invasion</option>
+                                
+                                    <option value="pagode">pagode</option>
+                                
+                                    <option value="pop reggaeton">pop reggaeton</option>
+                                
+                            </select>
+                        </div>
+                        <div class="col-2 pb-2">
+                            <button type="button" class="btn btn-primary btn-block" onclick="neighbourhoodHighlight({nodes: []});">Reset Selection</button>
+                        </div>
+                    </div>
+                </div>
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+            <div id="loadingBar">
+              <div class="outerBorder">
+                <div id="text">0%</div>
+                <div id="border">
+                  <div id="bar"></div>
+                </div>
+              </div>
+            </div>
+        
+        
+            <div id="config"></div>
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+                  new TomSelect("#select-node",{
+                      create: false,
+                      sortField: {
+                          field: "text",
+                          direction: "asc"
+                      }
+                  });
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"borderWidthSelected": 4, "color": "#6666ff", "font": {"color": "white"}, "id": "pop", "label": "pop", "shape": "dot", "size": 34}, {"borderWidthSelected": 4, "color": "#ff6666", "font": {"color": "white"}, "id": "rap", "label": "rap", "shape": "dot", "size": 46}, {"borderWidthSelected": 4, "color": "#66ff66", "font": {"color": "white"}, "id": "rock", "label": "rock", "shape": "dot", "size": 42}, {"borderWidthSelected": 4, "color": "#bb8888", "font": {"color": "white"}, "id": "urbano latino", "label": "urbano latino", "shape": "dot", "size": 42}, {"borderWidthSelected": 4, "color": "#ee88bb", "font": {"color": "white"}, "id": "hip hop", "label": "hip hop", "shape": "dot", "size": 42}, {"borderWidthSelected": 4, "color": "#bb8888", "font": {"color": "white"}, "id": "trap latino", "label": "trap latino", "shape": "dot", "size": 38}, {"borderWidthSelected": 4, "color": "#bb88ee", "font": {"color": "white"}, "id": "dance pop", "label": "dance pop", "shape": "dot", "size": 26}, {"borderWidthSelected": 4, "color": "#bb8888", "font": {"color": "white"}, "id": "reggaeton", "label": "reggaeton", "shape": "dot", "size": 38}, {"borderWidthSelected": 4, "color": "#88eebb", "font": {"color": "white"}, "id": "modern rock", "label": "modern rock", "shape": "dot", "size": 38}, {"borderWidthSelected": 4, "color": "#bb88bb", "font": {"color": "white"}, "id": "latin pop", "label": "latin pop", "shape": "dot", "size": 38}, {"borderWidthSelected": 4, "color": "#88ee88", "font": {"color": "white"}, "id": "classic rock", "label": "classic rock", "shape": "dot", "size": 70}, {"borderWidthSelected": 4, "color": "#888888", "font": {"color": "white"}, "id": "musica mexicana", "label": "musica mexicana", "shape": "dot", "size": 38}, {"borderWidthSelected": 4, "color": "#88bbbb", "font": {"color": "white"}, "id": "pov: indie", "label": "pov: indie", "shape": "dot", "size": 30}, {"borderWidthSelected": 4, "color": "#88ee88", "font": {"color": "white"}, "id": "permanent wave", "label": "permanent wave", "shape": "dot", "size": 30}, {"borderWidthSelected": 4, "color": "#88bb88", "font": {"color": "white"}, "id": "alternative metal", "label": "alternative metal", "shape": "dot", "size": 34}, {"borderWidthSelected": 4, "color": "#888888", "font": {"color": "white"}, "id": "corrido", "label": "corrido", "shape": "dot", "size": 26}, {"borderWidthSelected": 4, "color": "#ee88bb", "font": {"color": "white"}, "id": "trap", "label": "trap", "shape": "dot", "size": 46}, {"borderWidthSelected": 4, "color": "#888888", "font": {"color": "white"}, "id": "filmi", "label": "filmi", "shape": "dot", "size": 22}, {"borderWidthSelected": 4, "color": "#888888", "font": {"color": "white"}, "id": "nueva musica mexicana", "label": "nueva musica mexicana", "shape": "dot", "size": 34}, {"borderWidthSelected": 4, "color": "#bb88bb", "font": {"color": "white"}, "id": "k-pop", "label": "k-pop", "shape": "dot", "size": 22}, {"borderWidthSelected": 4, "color": "#88ee88", "font": {"color": "white"}, "id": "album rock", "label": "album rock", "shape": "dot", "size": 38}, {"borderWidthSelected": 4, "color": "#8888bb", "font": {"color": "white"}, "id": "edm", "label": "edm", "shape": "dot", "size": 42}, {"borderWidthSelected": 4, "color": "#88bbbb", "font": {"color": "white"}, "id": "contemporary country", "label": "contemporary country", "shape": "dot", "size": 30}, {"borderWidthSelected": 4, "color": "#88bb88", "font": {"color": "white"}, "id": "soft rock", "label": "soft rock", "shape": "dot", "size": 34}, {"borderWidthSelected": 4, "color": "#ee88bb", "font": {"color": "white"}, "id": "pop rap", "label": "pop rap", "shape": "dot", "size": 34}, {"borderWidthSelected": 4, "color": "#888888", "font": {"color": "white"}, "id": "norteno", "label": "norteno", "shape": "dot", "size": 34}, {"borderWidthSelected": 4, "color": "#8888bb", "font": {"color": "white"}, "id": "pop dance", "label": "pop dance", "shape": "dot", "size": 38}, {"borderWidthSelected": 4, "color": "#88ee88", "font": {"color": "white"}, "id": "hard rock", "label": "hard rock", "shape": "dot", "size": 30}, {"borderWidthSelected": 4, "color": "#888888", "font": {"color": "white"}, "id": "sierreno", "label": "sierreno", "shape": "dot", "size": 42}, {"borderWidthSelected": 4, "color": "#88bbbb", "font": {"color": "white"}, "id": "canadian pop", "label": "canadian pop", "shape": "dot", "size": 14}, {"borderWidthSelected": 4, "color": "#888888", "font": {"color": "white"}, "id": "sad sierreno", "label": "sad sierreno", "shape": "dot", "size": 30}, {"borderWidthSelected": 4, "color": "#88bb88", "font": {"color": "white"}, "id": "mellow gold", "label": "mellow gold", "shape": "dot", "size": 42}, {"borderWidthSelected": 4, "color": "#8888ee", "font": {"color": "white"}, "id": "uk pop", "label": "uk pop", "shape": "dot", "size": 26}, {"borderWidthSelected": 4, "color": "#88bb88", "font": {"color": "white"}, "id": "nu metal", "label": "nu metal", "shape": "dot", "size": 26}, {"borderWidthSelected": 4, "color": "#bb88bb", "font": {"color": "white"}, "id": "desi pop", "label": "desi pop", "shape": "dot", "size": 34}, {"borderWidthSelected": 4, "color": "#88bb88", "font": {"color": "white"}, "id": "country", "label": "country", "shape": "dot", "size": 30}, {"borderWidthSelected": 4, "color": "#ee8888", "font": {"color": "white"}, "id": "melodic rap", "label": "melodic rap", "shape": "dot", "size": 26}, {"borderWidthSelected": 4, "color": "#88bb88", "font": {"color": "white"}, "id": "post-grunge", "label": "post-grunge", "shape": "dot", "size": 30}, {"borderWidthSelected": 4, "color": "#88bbbb", "font": {"color": "white"}, "id": "modern bollywood", "label": "modern bollywood", "shape": "dot", "size": 22}, {"borderWidthSelected": 4, "color": "#888888", "font": {"color": "white"}, "id": "banda", "label": "banda", "shape": "dot", "size": 30}, {"borderWidthSelected": 4, "color": "#88bb88", "font": {"color": "white"}, "id": "alternative rock", "label": "alternative rock", "shape": "dot", "size": 30}, {"borderWidthSelected": 4, "color": "#8888bb", "font": {"color": "white"}, "id": "sertanejo universitario", "label": "sertanejo universitario", "shape": "dot", "size": 26}, {"borderWidthSelected": 4, "color": "#88bb88", "font": {"color": "white"}, "id": "art pop", "label": "art pop", "shape": "dot", "size": 26}, {"borderWidthSelected": 4, "color": "#88bb88", "font": {"color": "white"}, "id": "singer-songwriter", "label": "singer-songwriter", "shape": "dot", "size": 30}, {"borderWidthSelected": 4, "color": "#88bbbb", "font": {"color": "white"}, "id": "country road", "label": "country road", "shape": "dot", "size": 26}, {"borderWidthSelected": 4, "color": "#bb88bb", "font": {"color": "white"}, "id": "atl hip hop", "label": "atl hip hop", "shape": "dot", "size": 26}, {"borderWidthSelected": 4, "color": "#bb88bb", "font": {"color": "white"}, "id": "colombian pop", "label": "colombian pop", "shape": "dot", "size": 30}, {"borderWidthSelected": 4, "color": "#888888", "font": {"color": "white"}, "id": "corridos tumbados", "label": "corridos tumbados", "shape": "dot", "size": 30}, {"borderWidthSelected": 4, "color": "#bb8888", "font": {"color": "white"}, "id": "french hip hop", "label": "french hip hop", "shape": "dot", "size": 22}, {"borderWidthSelected": 4, "color": "#bb88bb", "font": {"color": "white"}, "id": "urban contemporary", "label": "urban contemporary", "shape": "dot", "size": 22}, {"borderWidthSelected": 4, "color": "#8888ee", "font": {"color": "white"}, "id": "alt z", "label": "alt z", "shape": "dot", "size": 26}, {"borderWidthSelected": 4, "color": "#bb8888", "font": {"color": "white"}, "id": "reggaeton colombiano", "label": "reggaeton colombiano", "shape": "dot", "size": 30}, {"borderWidthSelected": 4, "color": "#bb88bb", "font": {"color": "white"}, "id": "arrocha", "label": "arrocha", "shape": "dot", "size": 26}, {"borderWidthSelected": 4, "color": "#bb8888", "font": {"color": "white"}, "id": "pop urbaine", "label": "pop urbaine", "shape": "dot", "size": 22}, {"borderWidthSelected": 4, "color": "#ee88bb", "font": {"color": "white"}, "id": "southern hip hop", "label": "southern hip hop", "shape": "dot", "size": 38}, {"borderWidthSelected": 4, "color": "#bb88bb", "font": {"color": "white"}, "id": "mexican pop", "label": "mexican pop", "shape": "dot", "size": 30}, {"borderWidthSelected": 4, "color": "#8888bb", "font": {"color": "white"}, "id": "indietronica", "label": "indietronica", "shape": "dot", "size": 26}, {"borderWidthSelected": 4, "color": "#8888bb", "font": {"color": "white"}, "id": "sertanejo", "label": "sertanejo", "shape": "dot", "size": 26}, {"borderWidthSelected": 4, "color": "#88bbbb", "font": {"color": "white"}, "id": "latin alternative", "label": "latin alternative", "shape": "dot", "size": 30}, {"borderWidthSelected": 4, "color": "#ee8888", "font": {"color": "white"}, "id": "gangster rap", "label": "gangster rap", "shape": "dot", "size": 26}, {"borderWidthSelected": 4, "color": "#bb88bb", "font": {"color": "white"}, "id": "k-pop girl group", "label": "k-pop girl group", "shape": "dot", "size": 18}, {"borderWidthSelected": 4, "color": "#888888", "font": {"color": "white"}, "id": "pop punk", "label": "pop punk", "shape": "dot", "size": 14}, {"borderWidthSelected": 4, "color": "#88bbbb", "font": {"color": "white"}, "id": "j-pop", "label": "j-pop", "shape": "dot", "size": 22}, {"borderWidthSelected": 4, "color": "#8888bb", "font": {"color": "white"}, "id": "rock en espanol", "label": "rock en espanol", "shape": "dot", "size": 38}, {"borderWidthSelected": 4, "color": "#88bbbb", "font": {"color": "white"}, "id": "new wave pop", "label": "new wave pop", "shape": "dot", "size": 26}, {"borderWidthSelected": 4, "color": "#888888", "font": {"color": "white"}, "id": "ranchera", "label": "ranchera", "shape": "dot", "size": 22}, {"borderWidthSelected": 4, "color": "#bb88bb", "font": {"color": "white"}, "id": "german hip hop", "label": "german hip hop", "shape": "dot", "size": 14}, {"borderWidthSelected": 4, "color": "#ee88bb", "font": {"color": "white"}, "id": "chicago rap", "label": "chicago rap", "shape": "dot", "size": 22}, {"borderWidthSelected": 4, "color": "#8888bb", "font": {"color": "white"}, "id": "k-pop boy group", "label": "k-pop boy group", "shape": "dot", "size": 18}, {"borderWidthSelected": 4, "color": "#888888", "font": {"color": "white"}, "id": "soul", "label": "soul", "shape": "dot", "size": 22}, {"borderWidthSelected": 4, "color": "#88ee88", "font": {"color": "white"}, "id": "heartland rock", "label": "heartland rock", "shape": "dot", "size": 38}, {"borderWidthSelected": 4, "color": "#8888bb", "font": {"color": "white"}, "id": "electro house", "label": "electro house", "shape": "dot", "size": 34}, {"borderWidthSelected": 4, "color": "#88bb88", "font": {"color": "white"}, "id": "neo mellow", "label": "neo mellow", "shape": "dot", "size": 22}, {"borderWidthSelected": 4, "color": "#bb88bb", "font": {"color": "white"}, "id": "italian pop", "label": "italian pop", "shape": "dot", "size": 26}, {"borderWidthSelected": 4, "color": "#bb8888", "font": {"color": "white"}, "id": "latin hip hop", "label": "latin hip hop", "shape": "dot", "size": 30}, {"borderWidthSelected": 4, "color": "#8888bb", "font": {"color": "white"}, "id": "latin arena pop", "label": "latin arena pop", "shape": "dot", "size": 26}, {"borderWidthSelected": 4, "color": "#8888bb", "font": {"color": "white"}, "id": "agronejo", "label": "agronejo", "shape": "dot", "size": 26}, {"borderWidthSelected": 4, "color": "#88bbbb", "font": {"color": "white"}, "id": "latin rock", "label": "latin rock", "shape": "dot", "size": 26}, {"borderWidthSelected": 4, "color": "#bb88bb", "font": {"color": "white"}, "id": "electropop", "label": "electropop", "shape": "dot", "size": 18}, {"borderWidthSelected": 4, "color": "#88bbbb", "font": {"color": "white"}, "id": "pop rock", "label": "pop rock", "shape": "dot", "size": 30}, {"borderWidthSelected": 4, "color": "#bb88bb", "font": {"color": "white"}, "id": "canadian hip hop", "label": "canadian hip hop", "shape": "dot", "size": 18}, {"borderWidthSelected": 4, "color": "#bb88bb", "font": {"color": "white"}, "id": "uk dance", "label": "uk dance", "shape": "dot", "size": 22}, {"borderWidthSelected": 4, "color": "#bb88bb", "font": {"color": "white"}, "id": "conscious hip hop", "label": "conscious hip hop", "shape": "dot", "size": 26}, {"borderWidthSelected": 4, "color": "#88bb88", "font": {"color": "white"}, "id": "rap metal", "label": "rap metal", "shape": "dot", "size": 26}, {"borderWidthSelected": 4, "color": "#88bbbb", "font": {"color": "white"}, "id": "new wave", "label": "new wave", "shape": "dot", "size": 34}, {"borderWidthSelected": 4, "color": "#888888", "font": {"color": "white"}, "id": "house", "label": "house", "shape": "dot", "size": 18}, {"borderWidthSelected": 4, "color": "#88bbbb", "font": {"color": "white"}, "id": "indonesian pop", "label": "indonesian pop", "shape": "dot", "size": 14}, {"borderWidthSelected": 4, "color": "#88bb88", "font": {"color": "white"}, "id": "modern alternative rock", "label": "modern alternative rock", "shape": "dot", "size": 22}, {"borderWidthSelected": 4, "color": "#bb88bb", "font": {"color": "white"}, "id": "toronto rap", "label": "toronto rap", "shape": "dot", "size": 22}, {"borderWidthSelected": 4, "color": "#88bb88", "font": {"color": "white"}, "id": "folk rock", "label": "folk rock", "shape": "dot", "size": 34}, {"borderWidthSelected": 4, "color": "#88bb88", "font": {"color": "white"}, "id": "indie rock", "label": "indie rock", "shape": "dot", "size": 34}, {"borderWidthSelected": 4, "color": "#bb8888", "font": {"color": "white"}, "id": "trap argentino", "label": "trap argentino", "shape": "dot", "size": 22}, {"borderWidthSelected": 4, "color": "#88bbbb", "font": {"color": "white"}, "id": "new romantic", "label": "new romantic", "shape": "dot", "size": 30}, {"borderWidthSelected": 4, "color": "#88bb88", "font": {"color": "white"}, "id": "metal", "label": "metal", "shape": "dot", "size": 18}, {"borderWidthSelected": 4, "color": "#888888", "font": {"color": "white"}, "id": "bedroom pop", "label": "bedroom pop", "shape": "dot", "size": 22}, {"borderWidthSelected": 4, "color": "#bb8888", "font": {"color": "white"}, "id": "east coast hip hop", "label": "east coast hip hop", "shape": "dot", "size": 22}, {"borderWidthSelected": 4, "color": "#88bb88", "font": {"color": "white"}, "id": "indie pop", "label": "indie pop", "shape": "dot", "size": 30}, {"borderWidthSelected": 4, "color": "#bb88bb", "font": {"color": "white"}, "id": "italian hip hop", "label": "italian hip hop", "shape": "dot", "size": 22}, {"borderWidthSelected": 4, "color": "#bb8888", "font": {"color": "white"}, "id": "afrobeats", "label": "afrobeats", "shape": "dot", "size": 18}, {"borderWidthSelected": 4, "color": "#8888ee", "font": {"color": "white"}, "id": "post-teen pop", "label": "post-teen pop", "shape": "dot", "size": 30}, {"borderWidthSelected": 4, "color": "#bb8888", "font": {"color": "white"}, "id": "west coast rap", "label": "west coast rap", "shape": "dot", "size": 22}, {"borderWidthSelected": 4, "color": "#88bbbb", "font": {"color": "white"}, "id": "turkish pop", "label": "turkish pop", "shape": "dot", "size": 18}, {"borderWidthSelected": 4, "color": "#bb88bb", "font": {"color": "white"}, "id": "slap house", "label": "slap house", "shape": "dot", "size": 30}, {"borderWidthSelected": 4, "color": "#bb88bb", "font": {"color": "white"}, "id": "miami hip hop", "label": "miami hip hop", "shape": "dot", "size": 22}, {"borderWidthSelected": 4, "color": "#8888ee", "font": {"color": "white"}, "id": "boy band", "label": "boy band", "shape": "dot", "size": 22}, {"borderWidthSelected": 4, "color": "#8888bb", "font": {"color": "white"}, "id": "spanish pop", "label": "spanish pop", "shape": "dot", "size": 22}, {"borderWidthSelected": 4, "color": "#888888", "font": {"color": "white"}, "id": "cloud rap", "label": "cloud rap", "shape": "dot", "size": 26}, {"borderWidthSelected": 4, "color": "#bb8888", "font": {"color": "white"}, "id": "trap brasileiro", "label": "trap brasileiro", "shape": "dot", "size": 14}, {"borderWidthSelected": 4, "color": "#88bb88", "font": {"color": "white"}, "id": "glam metal", "label": "glam metal", "shape": "dot", "size": 26}, {"borderWidthSelected": 4, "color": "#bb88bb", "font": {"color": "white"}, "id": "punjabi pop", "label": "punjabi pop", "shape": "dot", "size": 22}, {"borderWidthSelected": 4, "color": "#8888bb", "font": {"color": "white"}, "id": "modern country pop", "label": "modern country pop", "shape": "dot", "size": 18}, {"borderWidthSelected": 4, "color": "#88bb88", "font": {"color": "white"}, "id": "neo soul", "label": "neo soul", "shape": "dot", "size": 30}, {"borderWidthSelected": 4, "color": "#888888", "font": {"color": "white"}, "id": "hoerspiel", "label": "hoerspiel", "shape": "dot", "size": 14}, {"borderWidthSelected": 4, "color": "#88bb88", "font": {"color": "white"}, "id": "stomp and holler", "label": "stomp and holler", "shape": "dot", "size": 26}, {"borderWidthSelected": 4, "color": "#888888", "font": {"color": "white"}, "id": "progressive house", "label": "progressive house", "shape": "dot", "size": 18}, {"borderWidthSelected": 4, "color": "#88ee88", "font": {"color": "white"}, "id": "glam rock", "label": "glam rock", "shape": "dot", "size": 22}, {"borderWidthSelected": 4, "color": "#8888bb", "font": {"color": "white"}, "id": "progressive electro house", "label": "progressive electro house", "shape": "dot", "size": 30}, {"borderWidthSelected": 4, "color": "#bb88bb", "font": {"color": "white"}, "id": "puerto rican pop", "label": "puerto rican pop", "shape": "dot", "size": 18}, {"borderWidthSelected": 4, "color": "#88bb88", "font": {"color": "white"}, "id": "country rock", "label": "country rock", "shape": "dot", "size": 46}, {"borderWidthSelected": 4, "color": "#8888bb", "font": {"color": "white"}, "id": "viral pop", "label": "viral pop", "shape": "dot", "size": 22}, {"borderWidthSelected": 4, "color": "#bb88bb", "font": {"color": "white"}, "id": "rage rap", "label": "rage rap", "shape": "dot", "size": 18}, {"borderWidthSelected": 4, "color": "#ee88bb", "font": {"color": "white"}, "id": "underground hip hop", "label": "underground hip hop", "shape": "dot", "size": 30}, {"borderWidthSelected": 4, "color": "#88bb88", "font": {"color": "white"}, "id": "piano rock", "label": "piano rock", "shape": "dot", "size": 22}, {"borderWidthSelected": 4, "color": "#8888bb", "font": {"color": "white"}, "id": "talent show", "label": "talent show", "shape": "dot", "size": 30}, {"borderWidthSelected": 4, "color": "#8888bb", "font": {"color": "white"}, "id": "synthpop", "label": "synthpop", "shape": "dot", "size": 30}, {"borderWidthSelected": 4, "color": "#bb8888", "font": {"color": "white"}, "id": "nigerian pop", "label": "nigerian pop", "shape": "dot", "size": 18}, {"borderWidthSelected": 4, "color": "#bb88bb", "font": {"color": "white"}, "id": "dark trap", "label": "dark trap", "shape": "dot", "size": 26}, {"borderWidthSelected": 4, "color": "#888888", "font": {"color": "white"}, "id": "punk", "label": "punk", "shape": "dot", "size": 14}, {"borderWidthSelected": 4, "color": "#88bbbb", "font": {"color": "white"}, "id": "swedish pop", "label": "swedish pop", "shape": "dot", "size": 14}, {"borderWidthSelected": 4, "color": "#bb8888", "font": {"color": "white"}, "id": "rap francais", "label": "rap francais", "shape": "dot", "size": 22}, {"borderWidthSelected": 4, "color": "#bb88bb", "font": {"color": "white"}, "id": "desi hip hop", "label": "desi hip hop", "shape": "dot", "size": 22}, {"borderWidthSelected": 4, "color": "#88bbbb", "font": {"color": "white"}, "id": "argentine rock", "label": "argentine rock", "shape": "dot", "size": 18}, {"borderWidthSelected": 4, "color": "#888888", "font": {"color": "white"}, "id": "tropical", "label": "tropical", "shape": "dot", "size": 22}, {"borderWidthSelected": 4, "color": "#88bb88", "font": {"color": "white"}, "id": "psychedelic rock", "label": "psychedelic rock", "shape": "dot", "size": 30}, {"borderWidthSelected": 4, "color": "#888888", "font": {"color": "white"}, "id": "ccm", "label": "ccm", "shape": "dot", "size": 18}, {"borderWidthSelected": 4, "color": "#8888bb", "font": {"color": "white"}, "id": "big room", "label": "big room", "shape": "dot", "size": 34}, {"borderWidthSelected": 4, "color": "#888888", "font": {"color": "white"}, "id": "grupera", "label": "grupera", "shape": "dot", "size": 26}, {"borderWidthSelected": 4, "color": "#88bb88", "font": {"color": "white"}, "id": "garage rock", "label": "garage rock", "shape": "dot", "size": 22}, {"borderWidthSelected": 4, "color": "#bb88bb", "font": {"color": "white"}, "id": "tropical house", "label": "tropical house", "shape": "dot", "size": 14}, {"borderWidthSelected": 4, "color": "#888888", "font": {"color": "white"}, "id": "opm", "label": "opm", "shape": "dot", "size": 14}, {"borderWidthSelected": 4, "color": "#88bb88", "font": {"color": "white"}, "id": "italian adult pop", "label": "italian adult pop", "shape": "dot", "size": 18}, {"borderWidthSelected": 4, "color": "#bb88bb", "font": {"color": "white"}, "id": "detroit hip hop", "label": "detroit hip hop", "shape": "dot", "size": 14}, {"borderWidthSelected": 4, "color": "#bb88bb", "font": {"color": "white"}, "id": "hip pop", "label": "hip pop", "shape": "dot", "size": 22}, {"borderWidthSelected": 4, "color": "#88bb88", "font": {"color": "white"}, "id": "art rock", "label": "art rock", "shape": "dot", "size": 26}, {"borderWidthSelected": 4, "color": "#88bbbb", "font": {"color": "white"}, "id": "german pop", "label": "german pop", "shape": "dot", "size": 14}, {"borderWidthSelected": 4, "color": "#88bbbb", "font": {"color": "white"}, "id": "modern country rock", "label": "modern country rock", "shape": "dot", "size": 26}, {"borderWidthSelected": 4, "color": "#8888bb", "font": {"color": "white"}, "id": "sped up", "label": "sped up", "shape": "dot", "size": 14}, {"borderWidthSelected": 4, "color": "#8888bb", "font": {"color": "white"}, "id": "metropopolis", "label": "metropopolis", "shape": "dot", "size": 22}, {"borderWidthSelected": 4, "color": "#bb8888", "font": {"color": "white"}, "id": "argentine hip hop", "label": "argentine hip hop", "shape": "dot", "size": 18}, {"borderWidthSelected": 4, "color": "#bb88bb", "font": {"color": "white"}, "id": "europop", "label": "europop", "shape": "dot", "size": 18}, {"borderWidthSelected": 4, "color": "#888888", "font": {"color": "white"}, "id": "mpb", "label": "mpb", "shape": "dot", "size": 14}, {"borderWidthSelected": 4, "color": "#888888", "font": {"color": "white"}, "id": "sleep", "label": "sleep", "shape": "dot", "size": 14}, {"borderWidthSelected": 4, "color": "#888888", "font": {"color": "white"}, "id": "folk", "label": "folk", "shape": "dot", "size": 26}, {"borderWidthSelected": 4, "color": "#888888", "font": {"color": "white"}, "id": "adult standards", "label": "adult standards", "shape": "dot", "size": 18}, {"borderWidthSelected": 4, "color": "#88bb88", "font": {"color": "white"}, "id": "yacht rock", "label": "yacht rock", "shape": "dot", "size": 26}, {"borderWidthSelected": 4, "color": "#bb88bb", "font": {"color": "white"}, "id": "urbano espanol", "label": "urbano espanol", "shape": "dot", "size": 14}, {"borderWidthSelected": 4, "color": "#88bbbb", "font": {"color": "white"}, "id": "dance rock", "label": "dance rock", "shape": "dot", "size": 26}, {"borderWidthSelected": 4, "color": "#88bb88", "font": {"color": "white"}, "id": "anime", "label": "anime", "shape": "dot", "size": 18}, {"borderWidthSelected": 4, "color": "#bb8888", "font": {"color": "white"}, "id": "mexican hip hop", "label": "mexican hip hop", "shape": "dot", "size": 14}, {"borderWidthSelected": 4, "color": "#8888bb", "font": {"color": "white"}, "id": "brostep", "label": "brostep", "shape": "dot", "size": 18}, {"borderWidthSelected": 4, "color": "#888888", "font": {"color": "white"}, "id": "indie folk", "label": "indie folk", "shape": "dot", "size": 18}, {"borderWidthSelected": 4, "color": "#88bb88", "font": {"color": "white"}, "id": "chamber pop", "label": "chamber pop", "shape": "dot", "size": 26}, {"borderWidthSelected": 4, "color": "#bb88bb", "font": {"color": "white"}, "id": "british soul", "label": "british soul", "shape": "dot", "size": 18}, {"borderWidthSelected": 4, "color": "#bb8888", "font": {"color": "white"}, "id": "trap triste", "label": "trap triste", "shape": "dot", "size": 18}, {"borderWidthSelected": 4, "color": "#888888", "font": {"color": "white"}, "id": "disco", "label": "disco", "shape": "dot", "size": 18}, {"borderWidthSelected": 4, "color": "#bb88bb", "font": {"color": "white"}, "id": "polish hip hop", "label": "polish hip hop", "shape": "dot", "size": 14}, {"borderWidthSelected": 4, "color": "#88bb88", "font": {"color": "white"}, "id": "j-rock", "label": "j-rock", "shape": "dot", "size": 18}, {"borderWidthSelected": 4, "color": "#888888", "font": {"color": "white"}, "id": "metalcore", "label": "metalcore", "shape": "dot", "size": 18}, {"borderWidthSelected": 4, "color": "#8888bb", "font": {"color": "white"}, "id": "emo rap", "label": "emo rap", "shape": "dot", "size": 22}, {"borderWidthSelected": 4, "color": "#888888", "font": {"color": "white"}, "id": "gen z singer-songwriter", "label": "gen z singer-songwriter", "shape": "dot", "size": 18}, {"borderWidthSelected": 4, "color": "#88bb88", "font": {"color": "white"}, "id": "folk-pop", "label": "folk-pop", "shape": "dot", "size": 18}, {"borderWidthSelected": 4, "color": "#888888", "font": {"color": "white"}, "id": "indie soul", "label": "indie soul", "shape": "dot", "size": 18}, {"borderWidthSelected": 4, "color": "#88bbbb", "font": {"color": "white"}, "id": "mexican rock", "label": "mexican rock", "shape": "dot", "size": 26}, {"borderWidthSelected": 4, "color": "#888888", "font": {"color": "white"}, "id": "classical", "label": "classical", "shape": "dot", "size": 14}, {"borderWidthSelected": 4, "color": "#bb88bb", "font": {"color": "white"}, "id": "uk hip hop", "label": "uk hip hop", "shape": "dot", "size": 14}, {"borderWidthSelected": 4, "color": "#bb88bb", "font": {"color": "white"}, "id": "pluggnb", "label": "pluggnb", "shape": "dot", "size": 18}, {"borderWidthSelected": 4, "color": "#88bb88", "font": {"color": "white"}, "id": "blues rock", "label": "blues rock", "shape": "dot", "size": 22}, {"borderWidthSelected": 4, "color": "#88bb88", "font": {"color": "white"}, "id": "grunge", "label": "grunge", "shape": "dot", "size": 26}, {"borderWidthSelected": 4, "color": "#88bb88", "font": {"color": "white"}, "id": "christian music", "label": "christian music", "shape": "dot", "size": 18}, {"borderWidthSelected": 4, "color": "#88bb88", "font": {"color": "white"}, "id": "funk metal", "label": "funk metal", "shape": "dot", "size": 22}, {"borderWidthSelected": 4, "color": "#bb8888", "font": {"color": "white"}, "id": "reggaeton flow", "label": "reggaeton flow", "shape": "dot", "size": 34}, {"borderWidthSelected": 4, "color": "#888888", "font": {"color": "white"}, "id": "vocal jazz", "label": "vocal jazz", "shape": "dot", "size": 18}, {"borderWidthSelected": 4, "color": "#888888", "font": {"color": "white"}, "id": "drift phonk", "label": "drift phonk", "shape": "dot", "size": 14}, {"borderWidthSelected": 4, "color": "#88bb88", "font": {"color": "white"}, "id": "turkish rock", "label": "turkish rock", "shape": "dot", "size": 18}, {"borderWidthSelected": 4, "color": "#bb88bb", "font": {"color": "white"}, "id": "alternative hip hop", "label": "alternative hip hop", "shape": "dot", "size": 22}, {"borderWidthSelected": 4, "color": "#bb8888", "font": {"color": "white"}, "id": "trap boricua", "label": "trap boricua", "shape": "dot", "size": 26}, {"borderWidthSelected": 4, "color": "#bb8888", "font": {"color": "white"}, "id": "funk carioca", "label": "funk carioca", "shape": "dot", "size": 14}, {"borderWidthSelected": 4, "color": "#bb8888", "font": {"color": "white"}, "id": "memphis hip hop", "label": "memphis hip hop", "shape": "dot", "size": 22}, {"borderWidthSelected": 4, "color": "#888888", "font": {"color": "white"}, "id": "mariachi", "label": "mariachi", "shape": "dot", "size": 18}, {"borderWidthSelected": 4, "color": "#888888", "font": {"color": "white"}, "id": "melodic metalcore", "label": "melodic metalcore", "shape": "dot", "size": 18}, {"borderWidthSelected": 4, "color": "#bb88bb", "font": {"color": "white"}, "id": "pop nacional", "label": "pop nacional", "shape": "dot", "size": 18}, {"borderWidthSelected": 4, "color": "#bb88bb", "font": {"color": "white"}, "id": "trap italiana", "label": "trap italiana", "shape": "dot", "size": 22}, {"borderWidthSelected": 4, "color": "#888888", "font": {"color": "white"}, "id": "salsa", "label": "salsa", "shape": "dot", "size": 18}, {"borderWidthSelected": 4, "color": "#bb88bb", "font": {"color": "white"}, "id": "dirty south rap", "label": "dirty south rap", "shape": "dot", "size": 34}, {"borderWidthSelected": 4, "color": "#888888", "font": {"color": "white"}, "id": "electronica", "label": "electronica", "shape": "dot", "size": 14}, {"borderWidthSelected": 4, "color": "#8888bb", "font": {"color": "white"}, "id": "pop soul", "label": "pop soul", "shape": "dot", "size": 22}, {"borderWidthSelected": 4, "color": "#88bb88", "font": {"color": "white"}, "id": "beatlesque", "label": "beatlesque", "shape": "dot", "size": 22}, {"borderWidthSelected": 4, "color": "#88bb88", "font": {"color": "white"}, "id": "british invasion", "label": "british invasion", "shape": "dot", "size": 22}, {"borderWidthSelected": 4, "color": "#88bb88", "font": {"color": "white"}, "id": "pagode", "label": "pagode", "shape": "dot", "size": 14}, {"borderWidthSelected": 4, "color": "#bb8888", "font": {"color": "white"}, "id": "pop reggaeton", "label": "pop reggaeton", "shape": "dot", "size": 18}]);
+                  edges = new vis.DataSet([{"from": "pop", "to": "dance pop"}, {"from": "pop", "to": "uk pop"}, {"from": "pop", "to": "alt z"}, {"from": "pop", "to": "post-teen pop"}, {"from": "pop", "to": "boy band"}, {"from": "rap", "to": "hip hop"}, {"from": "rap", "to": "trap"}, {"from": "rap", "to": "pop rap"}, {"from": "rap", "to": "melodic rap"}, {"from": "rap", "to": "southern hip hop"}, {"from": "rap", "to": "gangster rap"}, {"from": "rap", "to": "chicago rap"}, {"from": "rap", "to": "underground hip hop"}, {"from": "rock", "to": "modern rock"}, {"from": "rock", "to": "classic rock"}, {"from": "rock", "to": "permanent wave"}, {"from": "rock", "to": "album rock"}, {"from": "rock", "to": "hard rock"}, {"from": "rock", "to": "heartland rock"}, {"from": "rock", "to": "glam rock"}, {"from": "urbano latino", "to": "trap latino"}, {"from": "urbano latino", "to": "reggaeton"}, {"from": "urbano latino", "to": "colombian pop"}, {"from": "urbano latino", "to": "reggaeton colombiano"}, {"from": "urbano latino", "to": "latin hip hop"}, {"from": "urbano latino", "to": "reggaeton flow"}, {"from": "urbano latino", "to": "trap boricua"}, {"from": "rap", "to": "conscious hip hop"}, {"from": "rap", "to": "east coast hip hop"}, {"from": "rap", "to": "west coast rap"}, {"from": "rap", "to": "alternative hip hop"}, {"from": "pop", "to": "pop rap"}, {"from": "rock", "to": "pov: indie"}, {"from": "rock", "to": "indietronica"}, {"from": "rock", "to": "modern alternative rock"}, {"from": "rock", "to": "indie rock"}, {"from": "rock", "to": "garage rock"}, {"from": "latin pop", "to": "colombian pop"}, {"from": "latin pop", "to": "mexican pop"}, {"from": "latin pop", "to": "rock en espanol"}, {"from": "latin pop", "to": "latin arena pop"}, {"from": "latin pop", "to": "spanish pop"}, {"from": "latin pop", "to": "puerto rican pop"}, {"from": "rock", "to": "soft rock"}, {"from": "rock", "to": "mellow gold"}, {"from": "rock", "to": "folk rock"}, {"from": "rock", "to": "country rock"}, {"from": "rock", "to": "psychedelic rock"}, {"from": "rock", "to": "art rock"}, {"from": "rock", "to": "yacht rock"}, {"from": "rock", "to": "blues rock"}, {"from": "rock", "to": "beatlesque"}, {"from": "rock", "to": "british invasion"}, {"from": "musica mexicana", "to": "nueva musica mexicana"}, {"from": "musica mexicana", "to": "norteno"}, {"from": "musica mexicana", "to": "sierreno"}, {"from": "musica mexicana", "to": "sad sierreno"}, {"from": "musica mexicana", "to": "banda"}, {"from": "musica mexicana", "to": "grupera"}, {"from": "modern rock", "to": "pov: indie"}, {"from": "modern rock", "to": "modern alternative rock"}, {"from": "modern rock", "to": "bedroom pop"}, {"from": "modern rock", "to": "indie pop"}, {"from": "rock", "to": "alternative rock"}, {"from": "rock", "to": "pop rock"}, {"from": "rock", "to": "new wave"}, {"from": "alternative metal", "to": "nu metal"}, {"from": "alternative metal", "to": "post-grunge"}, {"from": "alternative metal", "to": "rap metal"}, {"from": "alternative metal", "to": "grunge"}, {"from": "alternative metal", "to": "funk metal"}, {"from": "corrido", "to": "norteno"}, {"from": "corrido", "to": "sierreno"}, {"from": "corrido", "to": "corridos tumbados"}, {"from": "rap", "to": "atl hip hop"}, {"from": "rap", "to": "memphis hip hop"}, {"from": "rap", "to": "dirty south rap"}, {"from": "filmi", "to": "desi pop"}, {"from": "filmi", "to": "modern bollywood"}, {"from": "musica mexicana", "to": "corridos tumbados"}, {"from": "k-pop", "to": "k-pop girl group"}, {"from": "k-pop", "to": "k-pop boy group"}, {"from": "rock", "to": "glam metal"}, {"from": "edm", "to": "pop dance"}, {"from": "edm", "to": "electro house"}, {"from": "edm", "to": "slap house"}, {"from": "edm", "to": "progressive house"}, {"from": "edm", "to": "progressive electro house"}, {"from": "edm", "to": "big room"}, {"from": "edm", "to": "brostep"}, {"from": "contemporary country", "to": "country"}, {"from": "contemporary country", "to": "country road"}, {"from": "contemporary country", "to": "modern country pop"}, {"from": "contemporary country", "to": "modern country rock"}, {"from": "classic rock", "to": "album rock"}, {"from": "classic rock", "to": "soft rock"}, {"from": "classic rock", "to": "mellow gold"}, {"from": "classic rock", "to": "heartland rock"}, {"from": "classic rock", "to": "yacht rock"}, {"from": "rap", "to": "dance pop"}, {"from": "musica mexicana", "to": "corrido"}, {"from": "edm", "to": "uk dance"}, {"from": "classic rock", "to": "singer-songwriter"}, {"from": "classic rock", "to": "folk rock"}, {"from": "classic rock", "to": "country rock"}, {"from": "pop", "to": "talent show"}, {"from": "filmi", "to": "punjabi pop"}, {"from": "filmi", "to": "desi hip hop"}, {"from": "filmi", "to": "pop nacional"}, {"from": "contemporary country", "to": "country rock"}, {"from": "rap", "to": "toronto rap"}, {"from": "alternative metal", "to": "pop rock"}, {"from": "permanent wave", "to": "alternative rock"}, {"from": "permanent wave", "to": "indie rock"}, {"from": "permanent wave", "to": "garage rock"}, {"from": "permanent wave", "to": "grunge"}, {"from": "sertanejo universitario", "to": "arrocha"}, {"from": "sertanejo universitario", "to": "sertanejo"}, {"from": "sertanejo universitario", "to": "agronejo"}, {"from": "art pop", "to": "indie rock"}, {"from": "art pop", "to": "indie pop"}, {"from": "art pop", "to": "chamber pop"}, {"from": "mellow gold", "to": "singer-songwriter"}, {"from": "mellow gold", "to": "folk rock"}, {"from": "mellow gold", "to": "country rock"}, {"from": "mellow gold", "to": "folk"}, {"from": "trap", "to": "atl hip hop"}, {"from": "trap", "to": "southern hip hop"}, {"from": "trap", "to": "dirty south rap"}, {"from": "urbano latino", "to": "latin pop"}, {"from": "corrido", "to": "nueva musica mexicana"}, {"from": "corrido", "to": "sad sierreno"}, {"from": "french hip hop", "to": "pop urbaine"}, {"from": "french hip hop", "to": "rap francais"}, {"from": "urban contemporary", "to": "neo soul"}, {"from": "urban contemporary", "to": "hip pop"}, {"from": "pop", "to": "gen z singer-songwriter"}, {"from": "rap", "to": "hip pop"}, {"from": "latin pop", "to": "latin alternative"}, {"from": "modern rock", "to": "indietronica"}, {"from": "modern rock", "to": "metropopolis"}, {"from": "modern rock", "to": "indie soul"}, {"from": "mexican pop", "to": "latin alternative"}, {"from": "mexican pop", "to": "rock en espanol"}, {"from": "mexican pop", "to": "latin rock"}, {"from": "mexican pop", "to": "mexican rock"}, {"from": "j-pop", "to": "anime"}, {"from": "j-pop", "to": "j-rock"}, {"from": "latin pop", "to": "latin rock"}, {"from": "latin pop", "to": "argentine rock"}, {"from": "latin pop", "to": "mexican rock"}, {"from": "new wave pop", "to": "new wave"}, {"from": "new wave pop", "to": "new romantic"}, {"from": "new wave pop", "to": "synthpop"}, {"from": "ranchera", "to": "grupera"}, {"from": "ranchera", "to": "mariachi"}, {"from": "soul", "to": "neo soul"}, {"from": "soul", "to": "disco"}, {"from": "neo mellow", "to": "pop rock"}, {"from": "neo mellow", "to": "piano rock"}, {"from": "italian pop", "to": "italian hip hop"}, {"from": "italian pop", "to": "italian adult pop"}, {"from": "italian pop", "to": "trap italiana"}, {"from": "latin alternative", "to": "rock en espanol"}, {"from": "latin alternative", "to": "latin rock"}, {"from": "latin alternative", "to": "mexican rock"}, {"from": "electropop", "to": "metropopolis"}, {"from": "permanent wave", "to": "post-grunge"}, {"from": "permanent wave", "to": "neo mellow"}, {"from": "permanent wave", "to": "pop rock"}, {"from": "permanent wave", "to": "piano rock"}, {"from": "canadian hip hop", "to": "toronto rap"}, {"from": "pop dance", "to": "uk dance"}, {"from": "pop dance", "to": "house"}, {"from": "hip hop", "to": "conscious hip hop"}, {"from": "hip hop", "to": "east coast hip hop"}, {"from": "hip hop", "to": "alternative hip hop"}, {"from": "permanent wave", "to": "new wave pop"}, {"from": "permanent wave", "to": "new wave"}, {"from": "permanent wave", "to": "new romantic"}, {"from": "permanent wave", "to": "synthpop"}, {"from": "permanent wave", "to": "dance rock"}, {"from": "uk dance", "to": "house"}, {"from": "melodic rap", "to": "canadian hip hop"}, {"from": "melodic rap", "to": "toronto rap"}, {"from": "classic rock", "to": "folk"}, {"from": "modern rock", "to": "alternative rock"}, {"from": "modern rock", "to": "art pop"}, {"from": "modern rock", "to": "indie rock"}, {"from": "modern rock", "to": "chamber pop"}, {"from": "trap argentino", "to": "argentine hip hop"}, {"from": "trap argentino", "to": "trap triste"}, {"from": "new wave pop", "to": "dance rock"}, {"from": "metal", "to": "glam metal"}, {"from": "pov: indie", "to": "bedroom pop"}, {"from": "pov: indie", "to": "indie pop"}, {"from": "pov: indie", "to": "art pop"}, {"from": "pov: indie", "to": "indie rock"}, {"from": "afrobeats", "to": "nigerian pop"}, {"from": "pop", "to": "viral pop"}, {"from": "hip hop", "to": "gangster rap"}, {"from": "hip hop", "to": "west coast rap"}, {"from": "turkish pop", "to": "turkish rock"}, {"from": "miami hip hop", "to": "underground hip hop"}, {"from": "miami hip hop", "to": "dirty south rap"}, {"from": "cloud rap", "to": "underground hip hop"}, {"from": "cloud rap", "to": "dark trap"}, {"from": "cloud rap", "to": "emo rap"}, {"from": "album rock", "to": "hard rock"}, {"from": "album rock", "to": "metal"}, {"from": "album rock", "to": "glam metal"}, {"from": "desi pop", "to": "punjabi pop"}, {"from": "desi pop", "to": "desi hip hop"}, {"from": "urban contemporary", "to": "soul"}, {"from": "urban contemporary", "to": "british soul"}, {"from": "urban contemporary", "to": "pop soul"}, {"from": "stomp and holler", "to": "indie folk"}, {"from": "stomp and holler", "to": "chamber pop"}, {"from": "stomp and holler", "to": "folk-pop"}, {"from": "classic rock", "to": "country"}, {"from": "classic rock", "to": "psychedelic rock"}, {"from": "classic rock", "to": "blues rock"}, {"from": "post-teen pop", "to": "viral pop"}, {"from": "post-teen pop", "to": "pop soul"}, {"from": "rage rap", "to": "pluggnb"}, {"from": "rap", "to": "miami hip hop"}, {"from": "rap", "to": "cloud rap"}, {"from": "rap", "to": "dark trap"}, {"from": "uk pop", "to": "post-teen pop"}, {"from": "uk pop", "to": "boy band"}, {"from": "uk pop", "to": "talent show"}, {"from": "uk pop", "to": "europop"}, {"from": "rock en espanol", "to": "argentine rock"}, {"from": "tropical", "to": "salsa"}, {"from": "tropical", "to": "pop reggaeton"}, {"from": "classic rock", "to": "art rock"}, {"from": "classic rock", "to": "british invasion"}, {"from": "ccm", "to": "christian music"}, {"from": "musica mexicana", "to": "ranchera"}, {"from": "modern rock", "to": "garage rock"}, {"from": "urban contemporary", "to": "southern hip hop"}, {"from": "classic rock", "to": "glam rock"}, {"from": "indietronica", "to": "electropop"}, {"from": "indietronica", "to": "metropopolis"}, {"from": "talent show", "to": "europop"}, {"from": "singer-songwriter", "to": "folk rock"}, {"from": "singer-songwriter", "to": "country rock"}, {"from": "singer-songwriter", "to": "folk"}, {"from": "adult standards", "to": "vocal jazz"}, {"from": "new wave", "to": "new romantic"}, {"from": "new wave", "to": "synthpop"}, {"from": "new wave", "to": "dance rock"}, {"from": "art pop", "to": "stomp and holler"}, {"from": "neo soul", "to": "british soul"}, {"from": "metalcore", "to": "melodic metalcore"}, {"from": "alt z", "to": "gen z singer-songwriter"}, {"from": "indietronica", "to": "indie soul"}, {"from": "alternative metal", "to": "alternative rock"}, {"from": "trap", "to": "memphis hip hop"}, {"from": "desi pop", "to": "pop nacional"}, {"from": "trap", "to": "miami hip hop"}, {"from": "neo soul", "to": "viral pop"}, {"from": "neo soul", "to": "pop soul"}, {"from": "classic rock", "to": "beatlesque"}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": true,
+        "filter": [
+            "physics"
+        ]
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+                  // if this network requires displaying the configure window,
+                  // put it in its div
+                  options.configure["container"] = document.getElementById("config");
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+                    network.on("click", neighbourhoodHighlight);
+                  
+
+                  
+                    network.on("selectNode", neighbourhoodHighlight);
+                  
+
+                  
+
+
+                  
+                      network.on("stabilizationProgress", function(params) {
+                          document.getElementById('loadingBar').removeAttribute("style");
+                          var maxWidth = 496;
+                          var minWidth = 20;
+                          var widthFactor = params.iterations/params.total;
+                          var width = Math.max(minWidth,maxWidth * widthFactor);
+                          document.getElementById('bar').style.width = width + 'px';
+                          document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+                      });
+                      network.once("stabilizationIterationsDone", function() {
+                          document.getElementById('text').innerHTML = '100%';
+                          document.getElementById('bar').style.width = '496px';
+                          document.getElementById('loadingBar').style.opacity = 0;
+                          // really clean the dom element
+                          setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+                      });
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
