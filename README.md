@@ -1,4 +1,4 @@
-# the-map-of-sounds
+# Charting Sounds
 Inspired by Glenn McDonald's Every Noise at Once. This project plots musical genres as a mathematical Network, showcasing the relationships between musical genres.
 
 This project uses the information found at [Every Noise at Once](https://everynoise.com) to display musical genres found on Spotify as a Mathematical Network.
