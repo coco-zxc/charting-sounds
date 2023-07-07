@@ -8,7 +8,7 @@ import gravis as gv
 page_bg_image = f"""
 <style>
 [data-testid="stAppViewContainer"]{{
-background-image: url("https://raw.githubusercontent.com/coco-zxc/charting-sounds/main/images/background.png");
+background-image: url("https://raw.githubusercontent.com/coco-zxc/charting-sounds/main/Images/background.png");
 }}
 
 [data-testid="stHeader"]{{
