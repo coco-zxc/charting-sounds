@@ -29,15 +29,15 @@ relationship_matrix = pd.read_csv("Data/relationship_matrix.csv").set_index('0')
 relationship_matrix.replace(np.nan,0,inplace=True)
 relationship_matrix = relationship_matrix + relationship_matrix.transpose()
 
-number_of_genres = st.slider("Number of Genres to display",10,500,value=100,step=10,key="main_slider")
+number_of_genres = st.slider("Number of Genres to display",10,500,value=250,step=10,key="main_slider")
 relationship_matrix = relationship_matrix.iloc[0:number_of_genres,0:number_of_genres]
 distance_threshold = 100
 
-st.write("Make a map from a specific genre")
+st.write("Choose what genres to see: ")
 col1, col2 , col3 = st.columns(3)
-selected_genres = col1.multiselect(label="Select a root",options = relationship_matrix.index.values)
+selected_genres = col1.multiselect(label="Select genre(s)",options = relationship_matrix.index.values)
 levels = col2.slider("Degrees of Separation",0,10,1)
-node_color = col3.color_picker("Select Color for custom network",value = "#dd4444")
+node_color = col3.color_picker("Select your color",value = "#48C9B0")
 
 # - - - - - - - - - - - GENERATE NETWORK - - - - - - - - - - - - - -
 G = nx.Graph()
