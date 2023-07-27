@@ -1,3 +1,0 @@
-This first version of this project contains the orignial scripts for webscraping as well as well as first (and somewhat failed) tests
-
-  I may document more about this version if needed, but meanwhile it is here only for the historical record

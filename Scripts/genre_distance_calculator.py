@@ -1,10 +1,9 @@
-import numpy as np
 import pandas as pd
 
 def init():
     global genres_by_root
     global genres_by_popularity
-    genres_by_root = pd.read_csv("root_table_clean.csv",index_col=0)
+    genres_by_root = pd.read_csv("/Users/georgegg/root_table.csv",index_col=0)
 
     genres_by_popularity = genres_by_root.iloc[0]
 
@@ -25,7 +24,7 @@ def main():
     init()
     
     #select the amount of genres to include:
-    top_genres = genres_by_popularity[0:500]
+    top_genres = genres_by_popularity[0:3000]
     #initialize squared DF
     number_of_genres = len(top_genres)
     genre_relationship_matrix = pd.DataFrame(index=range(number_of_genres),columns=range(number_of_genres))
