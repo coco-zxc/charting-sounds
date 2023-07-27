@@ -52,29 +52,29 @@ col2.markdown("<p><br>Click and drag to move the map/nodes around, scroll to zoo
 
 map_type = col1.selectbox("Select a Map to explore:",options=["Default Map","Custom Map","Path Finder"])
 
-match map_type:
-    case "Default Map":
 
-        number_of_genres = st.slider("Genres to include (by popularity)",10,3000,value=100,step=10)
-        relationship_matrix = relationship_matrix.iloc[0:number_of_genres,0:number_of_genres]
-        cache_identifier = str(number_of_genres)
+if map_type == "Default Map":
 
-        st.write("Large map! Please be Patient while it loads") if number_of_genres > 1000 else None
+    number_of_genres = st.slider("Genres to include (by popularity)",10,3000,value=100,step=10)
+    relationship_matrix = relationship_matrix.iloc[0:number_of_genres,0:number_of_genres]
+    cache_identifier = str(number_of_genres)
+
+    st.write("Large map! Please be Patient while it loads") if number_of_genres > 1000 else None
 
 
-    case "Custom Map":
+if map_type == "Custom Map":
 
-        col1, col2, col3 = st.columns(3)
+    col1, col2, col3 = st.columns(3)
 
-        selected_genres = col1.multiselect(label="Select Genres",options = relationship_matrix.index.values)
-        degrees_of_separation = col2.slider("Degrees of Separation",0,6,0)
-        cache_identifier = str(selected_genres) + str(degrees_of_separation)
-    
-    case "Path Finder":
-        u1,col1,u2,col2,u3= st.columns([1,2,2,2,1])
-        genre1 = col1.selectbox(label="Source",options=relationship_matrix.index.values)
-        genre2 = col2.selectbox(label="Destination",options=relationship_matrix.index.values)
-        cache_identifier = genre1+genre2
+    selected_genres = col1.multiselect(label="Select Genres",options = relationship_matrix.index.values)
+    degrees_of_separation = col2.slider("Degrees of Separation",0,6,0)
+    cache_identifier = str(selected_genres) + str(degrees_of_separation)
+
+if map_type == "Path Finder":
+    u1,col1,u2,col2,u3= st.columns([1,2,2,2,1])
+    genre1 = col1.selectbox(label="Source",options=relationship_matrix.index.values)
+    genre2 = col2.selectbox(label="Destination",options=relationship_matrix.index.values)
+    cache_identifier = genre1+genre2
 
 
 
@@ -87,13 +87,13 @@ graph = cs.generate_network(relationship_matrix,100)
 
 @st.cache_data(ttl=600)
 def generate_html_map(map_type:str,cache_identifier):
-    match map_type:
-        case "Default Map":
-            map_html = cs.default_map(relationship_matrix,graph)
-        case "Custom Map":
-            map_html = cs.rooted_map(graph,relationship_matrix,selected_genres,degrees_of_separation,50)
-        case "Path Finder":
-            map_html = cs.path_finder_map(graph,genre1,genre2)
+    
+    if map_type == "Default Map":
+        map_html = cs.default_map(relationship_matrix,graph)
+    if map_type == "Custom Map":
+        map_html = cs.rooted_map(graph,relationship_matrix,selected_genres,degrees_of_separation,50)
+    if map_type =="Path Finder":
+        map_html = cs.path_finder_map(graph,genre1,genre2)
     return map_html
 
 
