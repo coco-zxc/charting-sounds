@@ -94,8 +94,8 @@ def generate_html_map(map_type:str,cache_identifier):
         map_html = cs.rooted_map(graph,relationship_matrix,selected_genres,degrees_of_separation,50)
     if map_type =="Path Finder":
         map_html = cs.path_finder_map(graph,genre1,genre2)
-    return map_html
+        
+    map_html = generate_html_map(map_type,cache_identifier)
+    components.html(map_html,height = 480) 
 
-
-map_html = generate_html_map(map_type,cache_identifier)
-components.html(map_html,height = 480)
+generate_html_map(map_type,cache_identifier)
