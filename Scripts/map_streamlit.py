@@ -28,7 +28,8 @@ spotify_embed_selection = st.sidebar.selectbox("Listen to:",options=spotify_id_r
 playlist_id = spotify_id_reference.at[spotify_embed_selection,"spotify_id"]
 spotify_embed_html = f'<iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/{playlist_id}?utm_source=generator" width="100%" height="440" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>'
 
-st.sidebar.write(spotify_embed_html,unsafe_allow_html=True)
+st.sidebar.markdown(spotify_embed_html,unsafe_allow_html=True)
+
 st.sidebar.markdown("This project wouldn't be possible if it wasnt for the work done over at [Every Noise at Once](https://everynoise.com)")
 
 #- - - - - - - - - - - INITIAL FILES & VARIABLES - - - - - - - - - - - - - -
@@ -43,15 +44,14 @@ def load_initial_data():
     relationship_matrix = relationship_matrix[genres_by_popularity].loc[genres_by_popularity]
 
 
-    return pd.DataFrame(relationship_matrix)
+    return relationship_matrix
 
 relationship_matrix = load_initial_data()
 
 col1,col2 = st.columns(2)
-col2.markdown("<p><br>Click and drag to move the map/nodes around, scroll to zoom in or out</p>",unsafe_allow_html=True)
-
 map_type = col1.selectbox("Select a Map to explore:",options=["Default Map","Custom Map","Path Finder"])
 
+st.markdown("<p><br>Click and drag to move the map/nodes around, scroll to zoom in or out</p>",unsafe_allow_html=True)
 
 if map_type == "Default Map":
 
@@ -59,41 +59,46 @@ if map_type == "Default Map":
     relationship_matrix = relationship_matrix.iloc[0:number_of_genres,0:number_of_genres]
     cache_identifier = str(number_of_genres)
 
-    st.write("Large map! Please be Patient while it loads") if number_of_genres > 1000 else None
+    st.write("Large map! Please be Patient while it loads") if number_of_genres > 1000 else ""
 
+elif map_type == "Custom Map":
 
-if map_type == "Custom Map":
+    col1_cm, col2_cm = st.columns(2)
 
-    col1, col2, col3 = st.columns(3)
-
-    selected_genres = col1.multiselect(label="Select Genres",options = relationship_matrix.index.values)
-    degrees_of_separation = col2.slider("Degrees of Separation",0,6,0)
+    selected_genres = col1_cm.multiselect(label="Select Genres",options = relationship_matrix.index.values)
+    degrees_of_separation = col2_cm.slider("Degrees of Separation",0,6,0)
     cache_identifier = str(selected_genres) + str(degrees_of_separation)
 
-if map_type == "Path Finder":
-    u1,col1,u2,col2,u3= st.columns([1,2,2,2,1])
-    genre1 = col1.selectbox(label="Source",options=relationship_matrix.index.values)
-    genre2 = col2.selectbox(label="Destination",options=relationship_matrix.index.values)
+elif map_type == "Path Finder":
+    col1_pf,col2_pf= st.columns(2)
+    genre1 = col1_pf.selectbox(label="Source",options=relationship_matrix.index.values)
+    genre2 = col2_pf.selectbox(label="Destination",options=relationship_matrix.index.values)
     cache_identifier = genre1+genre2
 
 
 
 
 # - - - - - - - - - - - - - GENERATE GRAPH - - - - - - - - - - - - - 
+@st.cache_data(ttl = 600)
+def network_with_cache(cache_identifier):
+    graph = cs.generate_network(relationship_matrix,100)
+    return graph
 
-graph = cs.generate_network(relationship_matrix,100)
-
+graph = network_with_cache(cache_identifier)
 # - - - - - - - - - LOGIC FOR WHICH MAP TO DISPLAY + REST OF STREAMLIT APP - - - - - - - - - 
 
 @st.cache_data(ttl=600)
 def generate_html_map(map_type:str,cache_identifier):
     
+
     if map_type == "Default Map":
         map_html = cs.default_map(relationship_matrix,graph)
-    if map_type == "Custom Map":
+    elif map_type == "Custom Map":
         map_html = cs.rooted_map(graph,relationship_matrix,selected_genres,degrees_of_separation,50)
-    if map_type =="Path Finder":
+    elif map_type == "Path Finder":
         map_html = cs.path_finder_map(graph,genre1,genre2)
-    components.html(map_html,height = 480) 
+    
+    return map_html
 
-generate_html_map(map_type,cache_identifier)
+map_html = generate_html_map(map_type,cache_identifier)
+components.html(map_html,height = 480)
